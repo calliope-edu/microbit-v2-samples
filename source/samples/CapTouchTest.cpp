@@ -25,10 +25,11 @@ DEALINGS IN THE SOFTWARE.
 
 #include "Tests.h"
 
-int last_t0, last_t1, last_t2;
+int last_t0, last_t1, last_t2, last_t3;
 static int c0 = 0;
 static int c1 = 0;
 static int c2 = 0;
+static int c3 = 0;
 
 #define TOUCH_SENSE_CLUSTER_LOW                     0
 #define TOUCH_SENSE_CLUSTER_HIGH                    1
@@ -107,6 +108,7 @@ onCalibrate(MicroBitEvent)
     c0 = last_t0;
     c1 = last_t1;
     c2 = last_t2;
+    c3 = last_t3;
 }
 
 static void
@@ -128,6 +130,10 @@ static void onTouchP2(MicroBitEvent e)
 {
     DMESG("TOUCH: P2");
 }
+static void onTouchPad3(MicroBitEvent e)
+{
+    DMESG("TOUCH: P3");
+}
 static void onTouchFace(MicroBitEvent e)
 {
     DMESG("TOUCH: FACE");
@@ -139,22 +145,25 @@ cap_touch_test()
     uBit.messageBus.listen(MICROBIT_ID_IO_P0, MICROBIT_BUTTON_EVT_CLICK, onTouchP0);
     uBit.messageBus.listen(MICROBIT_ID_IO_P1, MICROBIT_BUTTON_EVT_CLICK, onTouchP1);
     uBit.messageBus.listen(MICROBIT_ID_IO_P2, MICROBIT_BUTTON_EVT_CLICK, onTouchP2);
+    uBit.messageBus.listen(MICROBIT_ID_IO_PAD3, MICROBIT_BUTTON_EVT_CLICK, onTouchPad3);
     uBit.messageBus.listen(MICROBIT_ID_FACE, MICROBIT_BUTTON_EVT_CLICK, onTouchFace);
 
     while(1)
     {
-        uBit.display.image.setPixelValue(0,0,uBit.io.P0.isTouched(TouchMode::Resistive) ? 255 : 0);
-        uBit.display.image.setPixelValue(2,0,uBit.io.P1.isTouched(TouchMode::Resistive) ? 255 : 0);
-        uBit.display.image.setPixelValue(4,0,uBit.io.P2.isTouched(TouchMode::Resistive) ? 255 : 0);
+        uBit.display.image.setPixelValue(0,2,uBit.io.P0.isTouched(TouchMode::Capacitative) ? 255 : 0);
+        uBit.display.image.setPixelValue(1,4,uBit.io.P1.isTouched(TouchMode::Capacitative) ? 255 : 0);
+        uBit.display.image.setPixelValue(3,4,uBit.io.P2.isTouched(TouchMode::Capacitative) ? 255 : 0);
+        uBit.display.image.setPixelValue(4,2,uBit.io.PAD3.isTouched(TouchMode::Capacitative) ? 255 : 0);
 
-        uBit.display.image.setPixelValue(2,4,uBit.logo.isPressed() ? 255 : 0);
+        uBit.display.image.setPixelValue(0,1,uBit.logo.isPressed() ? 255 : 0);
 
         // Only useful is pins are placed in capacitative mode...
         if (uBit.buttonA.isPressed())
         {
             uBit.io.P0.touchCalibrate();
             uBit.io.P1.touchCalibrate();
-            uBit.io.P2.touchCalibrate();            
+            uBit.io.P2.touchCalibrate();    
+            uBit.io.PAD3.touchCalibrate();        
 
             uBit.sleep(1000);
         }
@@ -173,7 +182,7 @@ cap_touch_test_raw()
     // Simply release this fiber, which will mean we enter the scheduler. Worse case, we then
     // sit in the idle task forever, in a power efficient sleep.
 
-    int t, t0, t1, t2;
+    int t, t0, t1, t2, t3;
     //int THRESHOLD = 100;
     int T_MAX = 2000;
 
@@ -183,6 +192,7 @@ cap_touch_test_raw()
         uBit.io.P0.setDigitalValue(0);
         uBit.io.P1.setDigitalValue(0);
         uBit.io.P2.setDigitalValue(0);
+        uBit.io.PAD3.setDigitalValue(0);
 
         uBit.sleep(20);
 
@@ -191,11 +201,12 @@ cap_touch_test_raw()
         t0=0;
         t1=0;
         t2=0;
+        t3=0;
 
         uBit.io.P0.getDigitalValue(PullMode::None);
         uBit.io.P1.getDigitalValue(PullMode::None);
         uBit.io.P2.getDigitalValue(PullMode::None);
-
+        uBit.io.PAD3.getDigitalValue(PullMode::None);
         while (t < T_MAX)
         {
             if (t0 == 0 && uBit.io.P0.getDigitalValue())
@@ -206,6 +217,9 @@ cap_touch_test_raw()
 
             if (t2 == 0 && uBit.io.P2.getDigitalValue())
                 t2=t;
+            
+            if (t3 == 0 && uBit.io.PAD3.getDigitalValue())
+                t3=t;
 
             t++;
         }
@@ -218,15 +232,20 @@ cap_touch_test_raw()
 
         if(t2 == 0)
             t2 = T_MAX;
+        
+        if(t3 == 0)
+            t3 = T_MAX;
 
         last_t0 = t0;
         last_t1 = t1;
         last_t2 = t2;
+        last_t3 = t3;
 
         // apply calibration
         t0 = t0 - c0;
         t1 = t1 - c1;
         t2 = t2 - c2;
+        t3 = t3 - c3;
 
 /*
         if (t0 > THRESHOLD)
@@ -244,7 +263,7 @@ cap_touch_test_raw()
         else
             uBit.display.image.setPixelValue(4,0,0);
 */
-        uBit.serial.printf("[P0: %d] [P1: %d] [P2: %d]\n", t0, t1, t2);
+        uBit.serial.printf("[P0: %d] [P1: %d] [P2: %d] [P3: %d]\n", t0, t1, t2, t3);
     }
     
 
