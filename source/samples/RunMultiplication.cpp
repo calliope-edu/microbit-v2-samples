@@ -19,7 +19,7 @@ static void factor1Handler(MicroBitEvent)
 
 static void factor2Handler(MicroBitEvent)
 {
-    uBit.display.print(*images(ImageMultiplier));
+    uBit.display.print(multiply);
     uBit.sleep(300);
 
     factor2 = uBit.random(10);
@@ -38,7 +38,7 @@ static void helpHandler(MicroBitEvent)
     uBit.display.scroll(result);
     uBit.sleep(300);
 
-    uBit.display.print(*images(ImageArrowLeft));
+    uBit.display.print(arrow_left);
 }
 
 void multiplication_run() {
@@ -63,7 +63,7 @@ void multiplication_run() {
         MICROBIT_ACCELEROMETER_EVT_SHAKE,
         helpHandler);
 
-    uBit.display.print(*images(ImageArrowLeft));
+    uBit.display.print(arrow_left);
 
     leave = false;
     while(!leave) {
