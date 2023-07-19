@@ -2,7 +2,7 @@
     "target": {
         "name": "codal-microbit-v2",
         "url": "https://github.com/calliope-edu/codal-microbit-v2",
-        "branch": "master",
+        "branch": "v0.2.50calli_proto2_5",
         "type": "git",
         "test_ignore": true,
         "dev": true
