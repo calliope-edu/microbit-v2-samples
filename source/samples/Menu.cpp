@@ -1,8 +1,8 @@
 #include "Menu.h"
 #include "MicroBit.h"
+#include "Utils.h"
 
 extern MicroBit uBit;
-
 
 menustate_t menuWaitForChoice(menustate_t start)
 {
@@ -25,6 +25,7 @@ menustate_t menuWaitForChoice(menustate_t start)
         // }
 
         uBit.display.print(ManagedString(state));
+        LEDcounter(state);
 
         // event loop
         while (true) {
