@@ -8,6 +8,7 @@
 #include "RunRockPaperScissors.h"
 #include "RunMultiplication.h"
 #include "RunVolumeMeter.h"
+#include "ProgramFive.h"
 #include "Utils.h"
 #include "Tests.h"
 // #include "neopixel.h"
@@ -21,32 +22,6 @@ static bool mute = false;
 const uint16_t pause = 300;
 
 // ---------------------------
-
-static void showNameHistogram(MicroBitDisplay &display)
-{
-    NRF_FICR_Type *ficr = NRF_FICR;
-    uint32_t n = ficr->DEVICEID[1];
-    uint32_t ld = 1;
-    uint32_t d = MICROBIT_DFU_HISTOGRAM_HEIGHT;
-    uint32_t h;
-
-    display.clear();
-    for (uint32_t i = 0; i < MICROBIT_DFU_HISTOGRAM_WIDTH; i++)
-    {
-        h = (n % d) / ld;
-
-        n -= h;
-        d *= MICROBIT_DFU_HISTOGRAM_HEIGHT;
-        ld *= MICROBIT_DFU_HISTOGRAM_HEIGHT;
-
-        for (uint32_t j = 0; j < h + 1; j++)
-            display.image.setPixelValue(
-                static_cast<int16_t>(MICROBIT_DFU_HISTOGRAM_WIDTH - i - 1),
-                static_cast<int16_t>(MICROBIT_DFU_HISTOGRAM_HEIGHT - j - 1),
-                255);
-    }
-}
-
 static void playsound(int freq)
 {
     if (mute || freq == 0)
@@ -121,6 +96,12 @@ int main()
 
     // uBit.accelerometer.updateSample();
     uBit.init();
+
+    // while (1)
+    // {
+    //        uBit.serial.printf("%d \n", soundLevel());
+    //        uBit.sleep(100);
+    // }
 
     // fire a accelerometer shake event with a 3G event
     uBit.messageBus.listen(MICROBIT_ID_GESTURE, MICROBIT_ACCELEROMETER_EVT_3G, shakeEvent);
@@ -197,6 +178,7 @@ int main()
         // uBit.serial.printf("%d \n",readMic());
 
         state = menuWaitForChoice(state);
+        
         switch (state)
         {
         // 1
@@ -225,10 +207,12 @@ int main()
             break;
         // 5
         case MenuStateInterpreter:
-            setStorageKey(KEY_INTERPRETER);
-            uBit.reset();
+            menuAnimateEnter();
+            programfive_run();
+            menuAnimateLeave();
             break;
         }
+        LEDcounter(state);
     }
 }
 
