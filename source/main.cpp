@@ -11,35 +11,17 @@
 #include "ProgramFive.h"
 #include "Utils.h"
 #include "Tests.h"
+#include "RunTests.h"
 // #include "neopixel.h"
 // #include "Interpreter.h"
 // #include "nrf.h"
 
 MicroBit uBit;
 
-static bool mute = false;
 // Length of neopixel strip
 const uint16_t pause = 300;
 
 // ---------------------------
-static void playsound(int freq)
-{
-    if (mute || freq == 0)
-    {
-        uBit.io.speaker.setAnalogValue(0);
-        uBit.io.P0.setAnalogValue(0);
-        return;
-    }
-    uBit.io.speaker.setHighDrive(true);
-    uBit.io.speaker.setAnalogValue(512);
-    uBit.io.P0.setHighDrive(true);
-    uBit.io.P0.setAnalogValue(512);
-    int period = 1000000.0 / (float)freq;
-
-    uBit.io.speaker.setAnalogPeriodUs(period);
-    uBit.io.P0.setAnalogPeriodUs(period);
-    return;
-}
 
 static inline void waitForever()
 {
@@ -94,20 +76,15 @@ static void menuAnimateLeave()
 int main()
 {
 
-    // uBit.accelerometer.updateSample();
     uBit.init();
-
-    // while (1)
-    // {
-    //        uBit.serial.printf("%d \n", soundLevel());
-    //        uBit.sleep(100);
-    // }
 
     // fire a accelerometer shake event with a 3G event
     uBit.messageBus.listen(MICROBIT_ID_GESTURE, MICROBIT_ACCELEROMETER_EVT_3G, shakeEvent);
 
     uBit.display.setBrightness(100);
     disableLEDs();
+
+    tests_run();
 
     uBit.serial.send("Calliope Demo v3.0\r\n");
 
