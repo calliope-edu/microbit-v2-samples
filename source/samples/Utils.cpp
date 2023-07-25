@@ -179,6 +179,27 @@ void LEDcounter(int number)
     }
 }
 
+bool mute_mic = false;
+
+void playsound(int freq)
+{
+    if (mute_mic || freq == 0)
+    {
+        uBit.io.speaker.setAnalogValue(0);
+        uBit.io.P0.setAnalogValue(0);
+        return;
+    }
+    uBit.io.speaker.setHighDrive(true);
+    uBit.io.speaker.setAnalogValue(512);
+    uBit.io.P0.setHighDrive(true);
+    uBit.io.P0.setAnalogValue(512);
+    int period = 1000000.0 / (float)freq;
+
+    uBit.io.speaker.setAnalogPeriodUs(period);
+    uBit.io.P0.setAnalogPeriodUs(period);
+    return;
+}
+
     // static void writeRgbLeds(const uint8_t led0r, const uint8_t led0g, const uint8_t led0b,
     //                          const uint8_t led1r, const uint8_t led1g, const uint8_t led1b,
     //                          const uint8_t led2r, const uint8_t led2g, const uint8_t led2b)

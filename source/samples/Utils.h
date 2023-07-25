@@ -34,6 +34,9 @@ void turnLEDon(int start_index, int end_index);
 
 void LEDcounter(int number);
 
+extern bool mute_mic;
+void playsound(int freq);
+
 
 
 #endif // UTILS_H
