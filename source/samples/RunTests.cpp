@@ -30,18 +30,23 @@ void tests_run()
 
     showAllLEDs();
     uBit.serial.send("show all LEDs on display\r\n");
-    uBit.sleep(1000);
-    uBit.display.clear();
     turnLEDon(0, 3);
     uBit.serial.send("show all neopixel LEDs\r\n");
-    uBit.sleep(1000);
-    disableLEDs();
-    blinkImageUntilEvent(MICROBIT_ID_BUTTON_A, MICROBIT_BUTTON_EVT_CLICK, arrow_left);
-    uBit.serial.send("button A pressed\r\n");
-    playsound(300);
-    uBit.sleep(500);
-    uBit.serial.send("play sound\r\n");
-    playsound(0);
+
+    while (true)
+    {
+        // button A
+        if (uBit.buttonA.isPressed())
+        {
+
+            uBit.serial.send("button A pressed\r\n");
+            playsound(300);
+            uBit.sleep(500);
+            uBit.serial.send("play sound\r\n");
+            playsound(0);
+            break;
+        }
+    }
 
     if (uBit.accelerometer.getZ() != 0)
     {
@@ -53,7 +58,8 @@ void tests_run()
     {
         uBit.display.clear();
     }
+    uBit.sleep(3000);
     uBit.serial.send("end test");
     uBit.display.clear();
-    uBit.sleep(500);
+    disableLEDs();
 }
