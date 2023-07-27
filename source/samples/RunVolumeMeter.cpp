@@ -10,11 +10,6 @@
 
 extern MicroBit uBit;
 
-long map(long x, long in_min, long in_max, long out_min, long out_max)
-{
-    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
-}
-
 int soundLevel()
 {
     LevelDetectorSPL *level = uBit.audio.levelSPL;
@@ -24,34 +19,6 @@ int soundLevel()
     const int scaled = max(MICROPHONE_MIN, min(micValue, MICROPHONE_MAX)) - MICROPHONE_MIN;
     return min(0xff, scaled * 0xff / (MICROPHONE_MAX - MICROPHONE_MIN));
 }
-
-// static int read()
-// {
-//     // int mic = 0;
-//     // const int n = 30;
-
-//     uBit.audio.activateMic();
-
-//     // for (uint8_t i = 0; i < n; i++)
-//     // {
-//     //     mic = soundLevel();
-//     // }
-
-//     // mapping values in range of LEDs
-//     const int gauge = map(soundLevel(), 0, 100, 0, 5);
-
-//     if (gauge < 0)
-//     {
-//         return 0;
-//     }
-
-//     if (gauge > 5)
-//     {
-//         return 5;
-//     }
-
-//     return gauge;
-// }
 
 void volumemeter_run()
 {
