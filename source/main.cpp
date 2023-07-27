@@ -73,6 +73,8 @@ static void menuAnimateLeave()
     disableLEDs();
 }
 
+int display_brightness = 100;
+
 int main()
 {
 
@@ -81,10 +83,12 @@ int main()
     // fire a accelerometer shake event with a 3G event
     uBit.messageBus.listen(MICROBIT_ID_GESTURE, MICROBIT_ACCELEROMETER_EVT_3G, shakeEvent);
 
-    uBit.display.setBrightness(100);
+    uBit.display.setBrightness(display_brightness);
     disableLEDs();
 
-    tests_run();
+    moveImageUntilEvent(MICROBIT_ID_GESTURE, MICROBIT_ACCELEROMETER_EVT_SHAKE, doublerow, 5, 1, 30);
+    //rainbow2();
+    //tests_run();
 
     uBit.serial.send("Calliope Demo v3.0\r\n");
 
@@ -124,9 +128,7 @@ int main()
     uBit.display.clear();
 
     // shake
-    // uBit.display.scroll(LS_DEMO_SHAKE);
-    blinkImageUntilEvent(MICROBIT_ID_GESTURE, MICROBIT_ACCELEROMETER_EVT_SHAKE, doublerow, -1, 2,
-                         100);
+    moveImageUntilEvent(MICROBIT_ID_GESTURE, MICROBIT_ACCELEROMETER_EVT_SHAKE, doublerow, 3, 1, 50);
     uBit.display.print(check);
     uBit.sleep(pause);
     uBit.display.clear();
@@ -134,11 +136,26 @@ int main()
     uBit.display.scroll("OK!");
 
     // RGB LEDs
-    startLEDs();
+    // startLEDs();
     disableLEDs();
     uBit.display.clear();
 
+    uBit.display.setBrightness(0);
     uBit.display.print(smiley);
+
+    for (int i = 0; i < display_brightness; i++)
+    {
+        uBit.display.setBrightness(i);
+
+        uBit.sleep(10);
+    }
+
+    for (int i = display_brightness; i > 0; i--)
+    {
+        uBit.display.setBrightness(i);
+        uBit.sleep(10);
+    }
+
     uBit.sleep(1000);
     // } // end storage key DEMO
 
@@ -155,7 +172,7 @@ int main()
         // uBit.serial.printf("%d \n",readMic());
 
         state = menuWaitForChoice(state);
-        
+
         switch (state)
         {
         // 1
