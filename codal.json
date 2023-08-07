@@ -3,16 +3,10 @@
         "name": "codal-microbit-v2",
         "url": "https://github.com/calliope-edu/codal-microbit-v2",
         "branch": "master",
-        "type": "git",
-        "test_ignore": true,
-        "dev": true
+        "type": "git"
     },
     "config":{
-        "DEVICE_DMESG": 1,
-        "DMESG_SERIAL_DEBUG": 1,
-        "CODAL_DEBUG": 1,
         "MICROBIT_BLE_ENABLED" : 0,
-        "MICROBIT_BLE_PAIRING_MODE": 0,
-        "CONFIG_MICROBIT_ERASE_USER_DATA_ON_REFLASH": 1
+        "MICROBIT_BLE_PAIRING_MODE": 0
     }
 }
