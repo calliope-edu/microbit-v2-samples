@@ -24,13 +24,7 @@ void rockpaperscissors_run()
     leave = false;
     while (!leave) {
 
-        blinkImageUntilEvent(
-            MICROBIT_ID_GESTURE,
-            MICROBIT_ACCELEROMETER_EVT_SHAKE,
-            doublerow,
-            -1,
-            2,
-            100);
+    moveImageUntilEvent(MICROBIT_ID_GESTURE, MICROBIT_ACCELEROMETER_EVT_SHAKE, doublerow, 3, 1, 40);
 
         if (leave) {
             break;

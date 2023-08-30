@@ -86,8 +86,6 @@ int main()
     uBit.display.setBrightness(display_brightness);
     disableLEDs();
 
-    moveImageUntilEvent(MICROBIT_ID_GESTURE, MICROBIT_ACCELEROMETER_EVT_SHAKE, doublerow, 5, 1, 30);
-    //rainbow2();
     //tests_run();
 
     uBit.serial.send("Calliope Demo v3.0\r\n");
@@ -98,9 +96,12 @@ int main()
     //     setStorageKey(KEY_DEMO);
 
     // begin of welcome DEMO program
+
     startSound();
 
     uBit.display.scroll("Hi");
+
+
 
     // press A
     uBit.display.print("A");
@@ -128,35 +129,18 @@ int main()
     uBit.display.clear();
 
     // shake
-    moveImageUntilEvent(MICROBIT_ID_GESTURE, MICROBIT_ACCELEROMETER_EVT_SHAKE, doublerow, 3, 1, 50);
+    moveImageUntilEvent(MICROBIT_ID_GESTURE, MICROBIT_ACCELEROMETER_EVT_SHAKE, doublerow, 3, 1, 40);
     uBit.display.print(check);
     uBit.sleep(pause);
     uBit.display.clear();
 
     uBit.display.scroll("OK!");
 
-    // RGB LEDs
-    // startLEDs();
-    disableLEDs();
-    uBit.display.clear();
-
-    uBit.display.setBrightness(0);
-    uBit.display.print(smiley);
-
-    for (int i = 0; i < display_brightness; i++)
-    {
-        uBit.display.setBrightness(i);
-
-        uBit.sleep(10);
-    }
-
-    for (int i = display_brightness; i > 0; i--)
-    {
-        uBit.display.setBrightness(i);
-        uBit.sleep(10);
-    }
+    // RGB LEDs and Smiley
+    rainbow2();
 
     uBit.sleep(1000);
+
     // } // end storage key DEMO
 
     menustate_t state = MenuStateOracle;
