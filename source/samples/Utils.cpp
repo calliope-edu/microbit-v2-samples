@@ -88,14 +88,9 @@ void blinkImageUntilEvent(const uint16_t source, const uint16_t value, const Mic
 //     uBit.messageBus.ignore(source, value, eventHandler);
 // }
 
-void moveImageUntilEvent(
-const uint16_t source,
-const uint16_t value,
-const MicroBitImage &image,
-// const uint16_t cycles,
-const uint16_t offset,
-const int asymetric,
-const uint16_t delay)
+void moveImageUntilEvent(const uint16_t source, const uint16_t value, const MicroBitImage &image,
+                         // const uint16_t cycles,
+                         const uint16_t offset, const int asymetric, const uint16_t delay)
 {
     int direction = 1;
     int x;
@@ -106,14 +101,15 @@ const uint16_t delay)
 
     for (uint8_t i = 0; !leave && !event; i++)
     {
-        uBit.serial.send(x + "\r\n");
-        x += direction; 
+        x += direction;
         if (x >= offset + asymetric)
-            {
-                direction = -1;
-            } else if (x <= -offset ) {
-                direction = 1;
-            }
+        {
+            direction = -1;
+        }
+        else if (x <= -offset)
+        {
+            direction = 1;
+        }
         uBit.display.print(image, x, 0, 0, delay);
     }
     uBit.messageBus.ignore(source, value, eventHandler);
@@ -286,6 +282,10 @@ void rainbow2()
 
     ManagedBuffer b(strip_length * 3);
     int delay = 1; // ms
+    int start_brightness = 0;
+    int cycle_length = 360;
+    int max_display_brightness = 100;
+    int display_brightness = 0;
 
     const uint8_t sins[360] = {
         0,   0,   0,   0,   0,   1,   1,   2,   2,   3,   4,   5,   6,   7,   8,   9,   11,  12,
@@ -309,32 +309,44 @@ void rainbow2()
         0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
         0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0};
 
-    /* fade leds in */
-    // for (int j = 0; j < 100; j++)
-    // {
-    //     for (size_t i = 0; i < 3; i++)
-    //     {
-    //         //
-    //         b[0 + i * 3] = map(j, 0, 100, 0, map(sins[120 % 360], 0, 255, 0, brightness));
-    //         b[1 + i * 3] = map(j, 0, 100, 0, map(sins[(120 + i* 120) % 360], 0, 255, 0,
-    //         brightness)); b[2 + i * 3] = map(j, 0, 100, 0, map(sins[(240 + i * 120) % 360], 0,
-    //         255, 0, brightness)); neopixel_send_buffer(uBit.io.RGB, b); uBit.sleep(1);
-    //     }
-    // }
+    uBit.display.setBrightness(0);
+    uBit.display.print(smiley);
 
-    for (int k = 0; k < 360; k++)
+    for (int k = 0; k < cycle_length ; k++)
     {
+        if (k <= max_display_brightness)
+        {
+            display_brightness++;
+        } 
+            if (k > cycle_length - (max_display_brightness + 1))
+        {
+            display_brightness--;
+        }
+        uBit.display.setBrightness(display_brightness);
+
+        if (k <= brightness)
+        {
+            start_brightness++;
+
+        }
+        if (k > cycle_length - (brightness + 1))
+        {
+            start_brightness--;
+        }
 
         for (int i = 0; i < strip_length; i++)
         {
-            // green red blue
-            b[0 + i * 3] = map(sins[(k + i * 120) % 360], 0, 255, 0, brightness);
-            b[1 + i * 3] = map(sins[(k + 120 + i * 120) % 360], 0, 255, 0, brightness);
-            b[2 + i * 3] = map(sins[(k + 240 + i * 120) % 360], 0, 255, 0, brightness);
-            neopixel_send_buffer(uBit.io.RGB, b);
-            uBit.sleep(delay);
+            b[0 + i * 3] = map(sins[(k + i * 120) % 360], 0, 255, 0, start_brightness);
+            b[1 + i * 3] = map(sins[(k + 120 + i * 120) % 360], 0, 255, 0, start_brightness);
+            b[2 + i * 3] = map(sins[(k + 240 + i * 120) % 360], 0, 255, 0, start_brightness);
         }
+        uBit.serial.send(start_brightness + "\r\n");
+        neopixel_send_buffer(uBit.io.RGB, b);
+        uBit.sleep(delay);
     }
+    disableLEDs();
+    uBit.display.clear();
+    uBit.display.setBrightness(max_display_brightness);
 }
 
 bool mute_mic = false;
