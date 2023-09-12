@@ -237,8 +237,6 @@ void LEDcounter(int number)
     }
 }
 
-#define MAX(x, y) (((x) > (y)) ? (x) : (y))
-#define MIN(x, y) (((x) < (y)) ? (x) : (y))
 typedef struct {
     double r;       // a fraction between 0 and 1
     double g;       // a fraction between 0 and 1
@@ -251,7 +249,6 @@ typedef struct {
     double v;       // a fraction between 0 and 1
 } hsv;
 
-static hsv   rgb2hsv(rgb in);
 static rgb   hsv2rgb(hsv in);
 
 rgb hsv2rgb(hsv in)

@@ -58,8 +58,7 @@ void tests_run()
     {
         uBit.display.clear();
     }
-    uBit.sleep(3000);
-    uBit.serial.send("end test");
+    uBit.serial.send("end test\r\n");
     uBit.display.clear();
     disableLEDs();
 }
