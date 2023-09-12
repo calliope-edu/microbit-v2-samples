@@ -237,43 +237,120 @@ void LEDcounter(int number)
     }
 }
 
-void rainbow()
-{
-    uint16_t i, j;
-    int WheelPos;
-    ManagedBuffer b(3 * 3);
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
+#define MIN(x, y) (((x) < (y)) ? (x) : (y))
+typedef struct {
+    double r;       // a fraction between 0 and 1
+    double g;       // a fraction between 0 and 1
+    double b;       // a fraction between 0 and 1
+} rgb;
 
-    for (j = 0; j < 250; j++)
-    {
-        for (i = 0; i < 3; i++)
-        {
-            WheelPos = i + j;
-            WheelPos = 255 - WheelPos;
-            if (WheelPos < 85)
-            {
-                b[0 + i * 3] = (255 - WheelPos * 3) / 10;
-                b[1 + i * 3] = (0) / 10;
-                b[2 + i * 3] = (WheelPos * 3) / 10;
-            }
-            if (WheelPos < 170)
-            {
-                WheelPos -= 85;
-                b[0 + i * 3] = (0) / 10;
-                b[1 + i * 3] = (WheelPos * 3) / 10;
-                b[2 + i * 3] = (255 - WheelPos * 3) / 10;
-            }
-            if (WheelPos > 170 && WheelPos < 240)
-            {
-                WheelPos -= 170;
-                b[0 + i * 3] = (WheelPos * 3) / 10;
-                b[1 + i * 3] = (255 - WheelPos * 3) / 10;
-                b[2 + i * 3] = (0) / 10;
-            }
+typedef struct {
+    double h;       // angle in degrees
+    double s;       // a fraction between 0 and 1
+    double v;       // a fraction between 0 and 1
+} hsv;
+
+static hsv   rgb2hsv(rgb in);
+static rgb   hsv2rgb(hsv in);
+
+rgb hsv2rgb(hsv in)
+{
+    double      hh, p, q, t, ff;
+    long        i;
+    rgb         out;
+
+    if(in.s <= 0.0) {       // < is bogus, just shuts up warnings
+        out.r = in.v;
+        out.g = in.v;
+        out.b = in.v;
+        return out;
+    }
+    hh = in.h;
+    if(hh >= 360.0) hh = 0.0;
+    hh /= 60.0;
+    i = (long)hh;
+    ff = hh - i;
+    p = in.v * (1.0 - in.s);
+    q = in.v * (1.0 - (in.s * ff));
+    t = in.v * (1.0 - (in.s * (1.0 - ff)));
+
+    switch(i) {
+    case 0:
+        out.r = in.v;
+        out.g = t;
+        out.b = p;
+        break;
+    case 1:
+        out.r = q;
+        out.g = in.v;
+        out.b = p;
+        break;
+    case 2:
+        out.r = p;
+        out.g = in.v;
+        out.b = t;
+        break;
+
+    case 3:
+        out.r = p;
+        out.g = q;
+        out.b = in.v;
+        break;
+    case 4:
+        out.r = t;
+        out.g = p;
+        out.b = in.v;
+        break;
+    case 5:
+    default:
+        out.r = in.v;
+        out.g = p;
+        out.b = q;
+        break;
+    }
+    return out;     
+}
+void rainbow(void){
+    ManagedBuffer b(3 * 3);
+    hsv color;
+
+
+    uBit.display.setBrightness(0);
+    uBit.display.print(smiley);
+    color.h=0; // angle
+    color.s=1; // saturation
+    color.v=0.16; //brightness
+    for(int j=0; j<300; j++) { // 
+        for(int i=0; i<3; i++) {
+            color.h = color.h +i*30; // different color for each RGB led
+            b[0+i*3]= (int)(hsv2rgb(color).g*255);
+            b[1+i*3]= (int)(hsv2rgb(color).b*255);
+            b[2+i*3]= (int)(hsv2rgb(color).r*255);
+
+        }
+        color.h=j; // increment angle
+        uBit.sleep(10); // speed of transition
+        neopixel_send_buffer(uBit.io.RGB, b);
+        uBit.display.setBrightness(j);
+    } 
+    for(int j=0; j<31; j++) { // brightness is 0.16, slowly reduce
+        color.h = 300; // start with previous color
+        color.v = color.v - 0.005; // dim rgb
+        for(int i=0; i<3; i++) {
+            color.h = color.h + i*30; // different color for each RGB led
+            b[0+i*3]= (int)(hsv2rgb(color).g*255);
+            b[1+i*3]= (int)(hsv2rgb(color).b*255);
+            b[2+i*3]= (int)(hsv2rgb(color).r*255);
+
         }
         neopixel_send_buffer(uBit.io.RGB, b);
+        uBit.display.setBrightness(300-j*10); //dim display
         uBit.sleep(10);
     }
-}
+    uBit.display.clear();
+    uBit.display.setBrightness(100); // restore brightness
+ }
 
 void rainbow2()
 {
