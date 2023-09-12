@@ -1,8 +1,6 @@
 #include "MicroBit.h"
 #include "Storage.h"
 #include "Images.h"
-// #include "RunTests.h"
-// #include "RunDemo.h"
 #include "Menu.h"
 #include "RunOracle.h"
 #include "RunRockPaperScissors.h"
@@ -12,16 +10,11 @@
 #include "Utils.h"
 #include "Tests.h"
 #include "RunTests.h"
-// #include "neopixel.h"
-// #include "Interpreter.h"
-// #include "nrf.h"
 
 MicroBit uBit;
 
-// Length of neopixel strip
 const uint16_t pause = 300;
 
-// ---------------------------
 
 static inline void waitForever()
 {
