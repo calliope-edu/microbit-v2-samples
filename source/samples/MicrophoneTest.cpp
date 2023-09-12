@@ -61,7 +61,7 @@ mems_mic_test()
         processor = new StreamNormalizer(mic->output, 0.05f, true, DATASTREAM_FORMAT_8BIT_SIGNED);
 
     if (streamer == NULL)
-        streamer = new SerialStreamer(processor->output, SERIAL_STREAM_MODE_BINARY);
+        streamer = new SerialStreamer(processor->output, SERIAL_STREAM_MODE_DECIMAL);
 
     uBit.io.runmic.setDigitalValue(1);
     uBit.io.runmic.setHighDrive(true);
