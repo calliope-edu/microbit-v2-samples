@@ -86,63 +86,70 @@ int main()
     uBit.display.setBrightness(display_brightness);
     disableLEDs();
 
-    //tests_run();
-
+    int stored;
     uBit.serial.send("Calliope Demo v3.0\r\n");
+    KeyValuePair* firstTime = uBit.storage.get("counter");
+    // check if Test has already been done
+    if (firstTime == NULL)
+    {
+        tests_run(); // Perform test
+        stored = 1;
+        uBit.storage.put("counter", (uint8_t *)&stored, sizeof(int));
+        uBit.sleep(1000);
+    }
+    else{
+        memcpy(&stored, firstTime->value, sizeof(int));
 
-    // check if DEMO has already been played
-    // if (!hasStorageKey(KEY_DEMO))
-    // {
-    //     setStorageKey(KEY_DEMO);
+    }
+    if (stored == 1){
+    
+        // begin of welcome DEMO program
+        startSound();
 
-    // begin of welcome DEMO program
+        uBit.display.scroll("Hi");
 
-    startSound();
+        // press A
+        uBit.display.print("A");
+        uBit.sleep(pause);
+        blinkImageUntilEvent(MICROBIT_ID_BUTTON_A, MICROBIT_BUTTON_EVT_CLICK, arrow_left);
+        uBit.display.print(check);
+        uBit.sleep(pause);
+        uBit.display.clear();
 
-    uBit.display.scroll("Hi");
+        // press B
+        uBit.display.print("B");
+        uBit.sleep(pause);
+        blinkImageUntilEvent(MICROBIT_ID_BUTTON_B, MICROBIT_BUTTON_EVT_CLICK, arrow_right);
+        uBit.display.print(check);
+        uBit.sleep(pause);
+        uBit.display.clear();
 
+        // press A+B
+        uBit.display.scroll("A+B");
+        uBit.sleep(pause);
+        blinkImageUntilEvent(MICROBIT_ID_BUTTON_AB, MICROBIT_BUTTON_EVT_CLICK, arrow_left_right);
+        beep();
+        uBit.display.print(check);
+        uBit.sleep(pause);
+        uBit.display.clear();
 
+        // shake
+        moveImageUntilEvent(MICROBIT_ID_GESTURE, MICROBIT_ACCELEROMETER_EVT_SHAKE, doublerow, 3, 1, 40);
+        uBit.display.print(check);
+        uBit.sleep(pause);
+        uBit.display.clear();
 
-    // press A
-    uBit.display.print("A");
-    uBit.sleep(pause);
-    blinkImageUntilEvent(MICROBIT_ID_BUTTON_A, MICROBIT_BUTTON_EVT_CLICK, arrow_left);
-    uBit.display.print(check);
-    uBit.sleep(pause);
-    uBit.display.clear();
+        uBit.display.scroll("OK!");
 
-    // press B
-    uBit.display.print("B");
-    uBit.sleep(pause);
-    blinkImageUntilEvent(MICROBIT_ID_BUTTON_B, MICROBIT_BUTTON_EVT_CLICK, arrow_right);
-    uBit.display.print(check);
-    uBit.sleep(pause);
-    uBit.display.clear();
+        // RGB LEDs and Smiley
+        rainbow();
 
-    // press A+B
-    uBit.display.scroll("A+B");
-    uBit.sleep(pause);
-    blinkImageUntilEvent(MICROBIT_ID_BUTTON_AB, MICROBIT_BUTTON_EVT_CLICK, arrow_left_right);
-    beep();
-    uBit.display.print(check);
-    uBit.sleep(pause);
-    uBit.display.clear();
+        stored = 2;
+        uBit.sleep(1000);
+        uBit.storage.put("counter", (uint8_t *)&stored, sizeof(int));
+    } // End of Welcome Demo Programm 
 
-    // shake
-    moveImageUntilEvent(MICROBIT_ID_GESTURE, MICROBIT_ACCELEROMETER_EVT_SHAKE, doublerow, 3, 1, 40);
-    uBit.display.print(check);
-    uBit.sleep(pause);
-    uBit.display.clear();
-
-    uBit.display.scroll("OK!");
-
-    // RGB LEDs and Smiley
-    rainbow();
-
-    uBit.sleep(1000);
-
-    // } // end storage key DEMO
-
+    // Beginn of program menu
     menustate_t state = MenuStateOracle;
 
     while (true)
