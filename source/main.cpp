@@ -137,7 +137,7 @@ int main()
     uBit.display.scroll("OK!");
 
     // RGB LEDs and Smiley
-    rainbow2();
+    rainbow();
 
     uBit.sleep(1000);
 
