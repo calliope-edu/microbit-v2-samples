@@ -2,7 +2,7 @@
     "target": {
         "name": "codal-microbit-v2",
         "url": "https://github.com/calliope-edu/codal-microbit-v2",
-        "branch": "v0.2.57-calliope",
+        "branch": "v0.2.57-calliope-1.4",
         "type": "git",
         "test_ignore": true,
         "dev": true
@@ -16,11 +16,12 @@
         "CONFIG_MICROBIT_ERASE_USER_DATA_ON_REFLASH": 1,
         "DEVICE_BLE": 1,
         "MICROBIT_BLE_ENABLED" : 1,
+        "MICROBIT_BLE_OPEN" : 1,
         "MICROBIT_BLE_PAIRING_MODE": 1,
         "MICROBIT_BLE_DFU_SERVICE": 1,
         "MICROBIT_BLE_DEVICE_INFORMATION_SERVICE": 1,
         "MICROBIT_BLE_EVENT_SERVICE" : 0,
         "MICROBIT_BLE_PARTIAL_FLASHING" : 1,
-        "MICROBIT_BLE_SECURITY_LEVEL": "SECURITY_MODE_ENCRYPTION_NO_MITM"
+        "MICROBIT_BLE_SECURITY_LEVEL": null
     }
 }
