@@ -20,9 +20,10 @@ Pin *edgeConnector[] = {
     &uBit.io.P13, 
     &uBit.io.P14, 
     &uBit.io.P15, 
-    &uBit.io.P16, 
-    &uBit.io.P19, 
-    &uBit.io.P20
+    &uBit.io.A1RX,
+    &uBit.io.A1TX, 
+    &uBit.io.A0SCL, 
+    &uBit.io.A0SDA
 };
 
 //Pin *analogPins[] = {&uBit.io.P1, &uBit.io.P2};
