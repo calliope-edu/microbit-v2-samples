@@ -52,13 +52,11 @@ void tests_run()
     {
         uBit.serial.send("accelerometer z-axis not 0\r\n");
         uBit.display.print(check);
-        uBit.sleep(1000);
     }
     else
     {
         uBit.display.clear();
     }
     uBit.serial.send("end test\r\n");
-    uBit.display.clear();
     disableLEDs();
 }

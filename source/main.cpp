@@ -93,9 +93,10 @@ int main()
     if (firstTime == NULL)
     {
         tests_run(); // Perform test
-        stored = 1;
-        uBit.storage.put("counter", (uint8_t *)&stored, sizeof(int));
-        uBit.sleep(1000);
+        stored = 1; // Set persistent counter so next boot will start in user program
+        uBit.storage.put("counter", (uint8_t *)&stored, sizeof(int));        
+        uBit.sleep(2000);
+        uBit.display.clear();
     }
     else{
         memcpy(&stored, firstTime->value, sizeof(int));
