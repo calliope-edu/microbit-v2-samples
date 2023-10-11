@@ -26,7 +26,6 @@ menustate_t menuWaitForChoice(menustate_t start)
         uBit.display.print(ManagedString(state));
         LEDcounter(state);
 
-
         // event loop
         while (true) {
             // button A
