@@ -172,38 +172,37 @@ int main()
             menuAnimateEnter();
             oracle_run();
             menuAnimateLeave();
-            LEDcounter(state);
+            LEDcounter(1);
             break;
         // 2
         case MenuStateRockPaperScissors:
             menuAnimateEnter();
             rockpaperscissors_run();
             menuAnimateLeave();
-            LEDcounter(state);
+            LEDcounter(2);
             break;
         // 3
         case MenuStateMultiplication:
             menuAnimateEnter();
             multiplication_run();
             menuAnimateLeave();
-            LEDcounter(state);
+            LEDcounter(3);
             break;
         // 4
         case MenuStateVolumeMeter:
             menuAnimateEnter();
             volumemeter_run();
             menuAnimateLeave();
-            LEDcounter(state);
+            LEDcounter(4);
             break;
         // 5
-        case MenuStateInterpreter:
-            menuAnimateEnter();
-            programfive_run();
-            menuAnimateLeave();
-            LEDcounter(state);
-            break;
+        // case MenuStateInterpreter:
+        //     menuAnimateEnter();
+        //     programfive_run();
+        //     menuAnimateLeave();
+        //     LEDcounter(state);
+        //     break;
         }
-        //LEDcounter(state);
     }
 }
 

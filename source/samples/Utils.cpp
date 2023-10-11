@@ -200,7 +200,7 @@ void startLEDs()
 
 void turnLEDon(int start_index, int end_index)
 {
-    brightness = 20;
+    //brightness = 20;
     ManagedBuffer b(strip_length * 3);
     b.fill(0);
     for (int i = start_index * 3; i < end_index * 3; i++)
@@ -224,17 +224,18 @@ void LEDcounter(int number)
         break;
     // 3
     case 3:
-        turnLEDon(0, 3);
+        turnLEDon(1, 3);
         break;
     // 4
     case 4:
-        turnLEDon(1, 3);
-        break;
-    // 5
-    case 5:
         turnLEDon(2, 3);
         break;
+    // 5
+    // case 5:
+    //     turnLEDon(2, 3);
+    //     break;
     }
+    uBit.sleep(10);
 }
 
 typedef struct {

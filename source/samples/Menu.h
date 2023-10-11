@@ -6,9 +6,9 @@ typedef enum MenuState {
     MenuStateRockPaperScissors,
     MenuStateMultiplication,
     MenuStateVolumeMeter,
-    MenuStateInterpreter,
+    // MenuStateInterpreter,
     MenuStateMin = MenuStateOracle,
-    MenuStateMax = MenuStateInterpreter
+    MenuStateMax = MenuStateVolumeMeter
 } menustate_t;
 
 menustate_t menuWaitForChoice(menustate_t start);
