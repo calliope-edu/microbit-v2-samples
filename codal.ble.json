@@ -2,7 +2,7 @@
     "target": {
         "name": "codal-microbit-v2",
         "url": "https://github.com/calliope-edu/codal-microbit-v2",
-        "branch": "calliope",
+        "branch": "v0.2.57-calliope-1.5",
         "type": "git"
     },
     "config":{
@@ -13,7 +13,6 @@
         "MICROBIT_BLE_DEVICE_INFORMATION_SERVICE": 1,
         "MICROBIT_BLE_EVENT_SERVICE" : 1,
         "MICROBIT_BLE_PARTIAL_FLASHING" : 1,
-        "MICROBIT_BLE_OPEN" : 1,
-        "MICROBIT_BLE_SECURITY_LEVEL": null
+        "MICROBIT_BLE_SECURITY_LEVEL": "SECURITY_MODE_ENCRYPTION_NO_MITM"
     }
 }
