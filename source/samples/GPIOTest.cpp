@@ -21,9 +21,14 @@ Pin *edgeConnector[] = {
     &uBit.io.P14, 
     &uBit.io.P15, 
     &uBit.io.A1RX,
-    &uBit.io.A1TX, 
+    &uBit.io.A1TX,
+    &uBit.io.P18, 
     &uBit.io.A0SCL, 
-    &uBit.io.A0SDA
+    &uBit.io.A0SDA,
+    &uBit.io.M_A_IN1,
+    &uBit.io.M_A_IN2,
+    &uBit.io.M_B_IN1,
+    &uBit.io.M_B_IN2
 };
 
 //Pin *analogPins[] = {&uBit.io.P1, &uBit.io.P2};
@@ -48,10 +53,14 @@ edge_connector_test()
         for (Pin *p : edgeConnector)
         {
             p->setDigitalValue(1);
-            uBit.sleep(500);
-            p->setDigitalValue(0);
-            uBit.sleep(500);
         }
+        uBit.sleep(300);
+        for (Pin *p : edgeConnector)
+        {
+            p->setDigitalValue(0);
+        }
+        uBit.sleep(300);
+
     }
 }
 

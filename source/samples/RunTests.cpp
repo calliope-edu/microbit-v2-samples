@@ -4,6 +4,7 @@
 //#include "MicroBitSerial.h"
 #include "Images.h"
 #include "Utils.h"
+#include "GPIOTest.h"
 
 extern MicroBit uBit;
 
@@ -45,6 +46,11 @@ void tests_run()
             uBit.serial.send("play sound\r\n");
             playsound(0);
             break;
+        }
+        if (uBit.buttonB.isPressed())
+        {
+            uBit.serial.send("button B pressed\r\n");
+            edge_connector_test();
         }
     }
 
