@@ -59,7 +59,12 @@ menustate_t menuWaitForChoice(menustate_t start)
                 }
                 return state;
             }
-
+            // reset to test mode by touching all 4 edges
+            if ((uBit.io.P0.isTouched(TouchMode::Capacitative)==1) && (uBit.io.P1.isTouched(TouchMode::Capacitative)==1) && (uBit.io.P2.isTouched(TouchMode::Capacitative)==1)&& (uBit.io.P3.isTouched(TouchMode::Capacitative)==1)){
+            uBit.storage.remove("counter");   
+            uBit.display.print("TestMode");
+            uBit.reset(); 
+            }
             uBit.sleep(10);
         }
     }

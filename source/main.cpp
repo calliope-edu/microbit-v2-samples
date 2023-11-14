@@ -86,9 +86,11 @@ int main()
     uBit.display.setBrightness(display_brightness);
     disableLEDs();
 
-    int stored;
     uBit.serial.send("Calliope Demo v3.0\r\n");
-    KeyValuePair* firstTime = uBit.storage.get("counter");
+
+    int stored;
+    // stored = 1; uBit.storage.put("counter", (uint8_t *)&stored, sizeof(int)); // Skip Test Sequence
+    KeyValuePair* firstTime = uBit.storage.get("counter"); 
     // check if Test has already been done
     if (firstTime == NULL)
     {
