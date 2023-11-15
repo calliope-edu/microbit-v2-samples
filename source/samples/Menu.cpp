@@ -60,7 +60,7 @@ menustate_t menuWaitForChoice(menustate_t start)
                 return state;
             }
             // reset to test mode by touching all 4 edges
-            if (uBit.io.P0.isTouched() && uBit.io.P1.isTouched() && uBit.io.P2.isTouched() && uBit.io.P3.isTouched()){
+            if ((uBit.accelerometer.getZ() > 900) && uBit.io.P0.isTouched() && uBit.io.P1.isTouched() && uBit.io.P2.isTouched() && uBit.io.P3.isTouched()){
             uBit.storage.remove("counter");   
             uBit.display.print("TestMode");
             uBit.reset(); 
