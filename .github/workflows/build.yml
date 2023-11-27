@@ -1,4 +1,4 @@
-name: Build Natively
+name: Build Natively on Ubuntu
 
 on:
   push:
@@ -10,8 +10,8 @@ jobs:
   build-py-script:
     strategy:
       matrix:
-        os: [ubuntu-20.04, macos-11, windows-2019]
-        gcc: ['7-2017-q4', 'latest']
+        os: [ubuntu-20.04] #, macos-11, windows-2019]
+        gcc: ['latest'] # '7-2017-q4' 
         cmake: ['3.6.0', '']  # Empty string installs the latest CMake release
       fail-fast: false
     runs-on: ${{ matrix.os }}
@@ -43,20 +43,32 @@ jobs:
       - name: Upload hex file
         uses: actions/upload-artifact@v1
         with:
-          name: build-py-${{ matrix.os }}
+          name: build-py-NO_BLE-${{ matrix.os }}
           path: MICROBIT.hex
-      - name: Prepare BLE example
+      - name: Prepare production example (BLE)
         run: |
           rm codal.json
           mv codal.ble.json codal.json
-          python -c "import pathlib; \
-            f=pathlib.Path('source/main.cpp'); \
-            f.write_text(f.read_text().replace('out_of_box_experience()', 'ble_test()'))"
+            # python -c "import pathlib; \
+            # f=pathlib.Path('source/main.cpp'); \
+            # f.write_text(f.read_text().replace('out_of_box_experience()', 'ble_test()'))"
           cat codal.json
       - name: Build BLE project using build.py
         run: python build.py --clean
       - name: Upload BLE hex file
         uses: actions/upload-artifact@v1
         with:
-          name: build-py-BLE-${{ matrix.os }}
+          name: build-py-production-${{ matrix.os }}
+          path: MICROBIT.hex
+      - name: Prepare user example (BLE) (skip test)
+        run: |
+            python -c "import pathlib; \
+            f=pathlib.Path('source/main.cpp'); \
+            f.write_text(f.read_text().replace('int productiontest=1;', 'int productiontest=0;'))"
+      - name: Build BLE project using build.py
+        run: python build.py --clean
+      - name: Upload BLE hex file
+        uses: actions/upload-artifact@v1
+        with:
+          name: build-py-user-${{ matrix.os }}
           path: MICROBIT.hex

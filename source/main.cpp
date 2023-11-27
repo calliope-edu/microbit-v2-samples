@@ -89,15 +89,17 @@ int main()
     uBit.serial.send("Calliope Demo v3.0\r\n");
 
     int stored;
-    // stored = 1; uBit.storage.put("counter", (uint8_t *)&stored, sizeof(int)); // Skip Test Sequence
+    int productiontest=1;
     KeyValuePair* firstTime = uBit.storage.get("counter"); 
     // check if Test has already been done
     if (firstTime == NULL)
     {
-        tests_run(); // Perform test
+        if (productiontest==1){
+            tests_run();} // Perform test
         stored = 1; // Set persistent counter so next boot will start in user program
         uBit.storage.put("counter", (uint8_t *)&stored, sizeof(int));        
-        uBit.sleep(2000);
+        if (productiontest==1){
+            uBit.sleep(2000);}
         uBit.display.clear();
     }
     else{

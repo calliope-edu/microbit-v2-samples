@@ -1,6 +1,7 @@
 #include "Menu.h"
 #include "MicroBit.h"
 #include "Utils.h"
+#include "RunTests.h"
 
 extern MicroBit uBit;
 
@@ -59,11 +60,12 @@ menustate_t menuWaitForChoice(menustate_t start)
                 }
                 return state;
             }
-            // reset to test mode by touching all 4 edges
+            // reset to test mode by touching all 4 edges and turning the mini upside down
             if ((uBit.accelerometer.getZ() > 900) && uBit.io.P0.isTouched() && uBit.io.P1.isTouched() && uBit.io.P2.isTouched() && uBit.io.P3.isTouched()){
-            uBit.storage.remove("counter");   
-            uBit.display.print("TestMode");
-            uBit.reset(); 
+            uBit.storage.remove("counter");
+            uBit.display.scroll("tester");
+            tests_run();
+            uBit.reset();
             }
             uBit.sleep(10);
         }
