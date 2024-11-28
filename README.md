@@ -1,5 +1,7 @@
 # Battery Voltage Measurement
 
+This branch is a fork of [microbit-v2-battery-voltage](https://github.com/microbit-foundation/microbit-v2-battery-voltage).
+
 A C++ project showing how to measure the Calliope mini V3 battery
 voltage.
 
@@ -13,19 +15,8 @@ as the microcontroller input voltage, as there is some
 between the battery and the microcontroller that will produce a small voltage
 drop.
 
-
-## Logging the voltage
-
-If the button A is pressed (keep it pressed until the text stops scrolling and
-all display LEDs are on), the battery voltage will be logged into a datalog, similar 
-to the makecode datalogger extension.
-
-The voltage is logged once per minute, and when the log is full
-(it should take over 5 days) a cross will be displayed and the programme will
-stop running.
-
-The data-log can then be accessed by connecting the Calliope mini to a computer
-and opening the `MY_DATA.HTM` file inside the `MINI` USB drive.
+Since the conventional 'codal' voltage measurement uses a reference voltage, that is connected to 
+the battery voltage, a more fine tuned set up of the ADC measurement is necessary as shown in this repository.
 
 ## How is the battery voltage measured
 
@@ -48,6 +39,20 @@ drop ranging from 210 to 300 mV (measured without any additional
 load on the Calliope mini power supply).
 However, these values should not be considered definitive,
 as they may further fluctuate under different conditions.
+
+## Logging the voltage
+
+If the button A is pressed (keep it pressed until the text stops scrolling and
+all display LEDs are on), the battery voltage will be logged into a datalog, similar 
+to the makecode datalogger extension.
+
+The voltage is logged once per minute, and when the log is full
+(it should take over 5 days) a cross will be displayed and the programme will
+stop running.
+
+The data-log can then be accessed by connecting the Calliope mini to a computer
+and opening the `MY_DATA.HTM` file inside the `MINI` USB drive.
+
 
 ## Building the project
 
