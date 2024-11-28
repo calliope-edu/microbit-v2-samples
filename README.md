@@ -1,75 +1,86 @@
-# microbit-v2-samples
+# Battery Voltage Measurement
 
-[![Native Build Status](https://github.com/lancaster-university/microbit-v2-samples/actions/workflows/build.yml/badge.svg)](https://github.com/lancaster-university/microbit-v2-samples/actions/workflows/build.yml) [![Docker Build Status](https://github.com/lancaster-university/microbit-v2-samples/actions/workflows/docker-image.yml/badge.svg)](https://github.com/lancaster-university/microbit-v2-samples/actions/workflows/docker-image.yml)
+A C++ project showing how to measure the Calliope mini V3 battery
+voltage.
 
-This repository provides the necessary tooling to compile a C/C++ CODAL program for the micro:bit V2 and generate a HEX file that can be downloaded to the device.
+This project measures the input voltage, in millivolts, of the nRF52833
+microcontroller. It shows the value on the Calliope mini display and also sends
+it via serial.
 
-## Raising Issues
-Any issues regarding the micro:bit are gathered on the [lancaster-university/codal-microbit-v2](https://github.com/lancaster-university/codal-microbit-v2) repository. Please raise yours there too.
+It's important to note that the battery voltage is not exactly the same
+as the microcontroller input voltage, as there is some
+[safety circuitry](https://docs.calliope.cc/tech/hardware/datenblatt/assets/calliope-mini-3-schaltplan.pdf)
+between the battery and the microcontroller that will produce a small voltage
+drop.
 
-# Installation
-You need some open source pre-requisites to build this repo. You can either install these tools yourself, or use the docker image provided below.
+
+## Logging the voltage
+
+If the button A is pressed (keep it pressed until the text stops scrolling and
+all display LEDs are on), the battery voltage will be logged into a datalog, similar 
+to the makecode datalogger extension.
+
+The voltage is logged once per minute, and when the log is full
+(it should take over 5 days) a cross will be displayed and the programme will
+stop running.
+
+The data-log can then be accessed by connecting the Calliope mini to a computer
+and opening the `MY_DATA.HTM` file inside the `MINI` USB drive.
+
+## How is the battery voltage measured
+
+To measure the Calliope mini battery voltage, the nRF52833 (the target MCU)
+microcontroller ADC is used to measure its Vdd input voltage.
+
+All the ADC channels are currently used for the Analogue pins and the on-board
+microphone, so for this example we hijack the ADC channel used for P0 and
+re-route it to the internal Vdd (voltage from the microcontroller power input).
+
+It's important to note that there are two protection diodes and a voltage
+regulator between the battery connector and the microcontroller Vdd pin,
+as can be seen in the
+[Caliope mini V3 schematics](https://docs.calliope.cc/tech/hardware/datenblatt/assets/calliope-mini-3-schaltplan.pdf).
+
+So, there is a voltage drop on these components that will vary on different
+factors, like the current load and component temperature.
+Through some of the Calliope mini testing we measured this voltage
+drop ranging from 210 to 300 mV (measured without any additional
+load on the Calliope mini power supply).
+However, these values should not be considered definitive,
+as they may further fluctuate under different conditions.
+
+## Building the project
+
+### Dependencies
 
 - [GNU Arm Embedded Toolchain](https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm/downloads)
 - [Git](https://git-scm.com)
 - [CMake](https://cmake.org/download/)
 - [Python 3](https://www.python.org/downloads/)
+- [Ninja Build](https://ninja-build.org/) (only needed on Windows)
 
-We use Ubuntu Linux for most of our tests. You can also install these tools easily through the package manager:
-
-```
-    sudo apt install gcc
-    sudo apt install git
-    sudo apt install cmake
-    sudo apt install gcc-arm-none-eabi binutils-arm-none-eabi
-```
-
-## Yotta
-For backwards compatibility with [microbit-samples](https://github.com/lancaster-university/microbit-samples) users, we also provide a yotta target for this repository.
-
-## Docker
-You can use the [Dockerfile](https://github.com/lancaster-university/microbit-v2-samples/blob/master/Dockerfile) provided to build the samples, or your own project sources, without installing additional dependencies.
-
-Run the following command to build the image locally; the .bin and .hex files from a successful compile will be placed in a new `out/` directory:
+For example, to install these dependencies on Ubuntu:
 
 ```
-    docker build -t microbit-tools --output out .
+sudo apt install gcc
+sudo apt install git
+sudo apt install cmake
+sudo apt install gcc-arm-none-eabi binutils-arm-none-eabi
 ```
 
-To omit the final output stage (for CI, for example) run without the `--output` arguments:
+### Building
 
-```
-    docker build -t microbit-tools .
-```
-
-# Building
+- Install the dependencies
 - Clone this repository
-- In the root of this repository type `python build.py`
-- The hex file will be built `MICROBIT.hex` and placed in the root folder.
-
-# Developing
-You will find a simple main.cpp in the `source` folder which you can edit. CODAL will also compile any other C/C++ header files our source files with the extension `.h .c .cpp` it finds in the source folder.
-
-The `samples` folder contains a number of simple sample programs that utilise you may find useful.
-
-## Developer codal.json
-
-There is an example `coda.dev.json` file which enables "developer builds" (clones dependencies from the latest commits, instead of the commits locked in the `codal-microbit-v2` tag), and adds extra CODAL flags that enable debug data to be printed to serial.
-To use it, simply copy the additional json entries into your `codal.json` file, or you can replace the file completely (`mv coda.dev.json codal.json`).
-
-# Debugging
-If you are using Visual Studio Code, there is a working debugging environment already set up for you, allowing you to set breakpoints and observe the micro:bit's memory. To get it working, follow these steps:
-
-1. Install either [OpenOCD](http://openocd.org) or [PyOCD](https://github.com/pyocd/pyOCD).
-2. Install the [`marus25.cortex-debug` VS Code extension](https://marketplace.visualstudio.com/items?itemName=marus25.cortex-debug).
-3. Build your program.
-4. Click the Run and Debug option in the toolbar.
-5. Two debugging options are provided: one for OpenOCD, and one for PyOCD. Select the correct one depending on the debugger you installed.
-
-This should launch the debugging environment for you. To set breakpoints, you can click to the left of the line number of where you want to stop.
-
-# Compatibility
-This repository is designed to follow the principles and APIs developed for the first version of the micro:bit. We have also included a compatibility layer so that the vast majority of C/C++ programs built using [microbit-dal](https://www.github.com/lancaster-university/microbit-dal) will operate with few changes.
-
-# Documentation
-API documentation is embedded in the code using doxygen. We will produce integrated web-based documentation soon.
+  ```
+  git clone https://github.com/calliope-edu/microbit-v2-samples.git
+  git checkout BatteryVoltageMeasurement
+  ```
+- In the root of this repository run the `build.py` script
+  ```
+  cd microbit-v2-samples
+  python build.py
+  ```
+- The `MICROBIT.hex` hex file will be built and placed in the root folder.
+- Copy the `MICROBIT.hex` file into the `MINI` USB drive to flash the
+  Calliope mini
