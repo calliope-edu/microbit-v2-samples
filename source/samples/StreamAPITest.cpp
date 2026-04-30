@@ -16,7 +16,9 @@
 
 extern MicroBit uBit;
 
-static int requestApproxSampleRate(SplitterChannel *channel, int desiredSampleRate) {
+template <typename T>
+static auto requestApproxSampleRateImpl(T *channel, int desiredSampleRate, int)
+    -> decltype(channel->requestSampleDropRate(1)) {
     int upstreamSampleRate = (int)uBit.audio.splitter->upstream.getSampleRate();
 
     if (desiredSampleRate <= 0)
@@ -28,6 +30,15 @@ static int requestApproxSampleRate(SplitterChannel *channel, int desiredSampleRa
         sampleDropRate = 1;
 
     return channel->requestSampleDropRate(sampleDropRate);
+}
+
+template <typename T>
+static int requestApproxSampleRateImpl(T *channel, int desiredSampleRate, long) {
+    return channel->requestSampleRate(desiredSampleRate);
+}
+
+static int requestApproxSampleRate(SplitterChannel *channel, int desiredSampleRate) {
+    return requestApproxSampleRateImpl(channel, desiredSampleRate, 0);
 }
 
 /**
