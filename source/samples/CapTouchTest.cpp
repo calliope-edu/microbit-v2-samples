@@ -128,8 +128,9 @@ static void onTouchP2(MicroBitEvent e)
 {
     DMESG("TOUCH: P2");
 }
-static void onTouchFace(MicroBitEvent e)
+static void onTouchLogo(MicroBitEvent e)
 {
+    DMESG("TOUCH: LOGO");
     DMESG("TOUCH: LOGO");
 }
 

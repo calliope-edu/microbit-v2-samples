@@ -76,7 +76,7 @@ mems_mic_test()
 void
 mems_mic_zero_offset_test()
 {
-    LevelDetectorSPL* levelSPL = new LevelDetectorSPL(uBit.audio.processor->output, 85.0, 65.0, 16.0, 0, DEVICE_ID_SYSTEM_LEVEL_DETECTOR, false);
+    LevelDetectorSPL* levelSPL = new LevelDetectorSPL(uBit.audio.processor->output, 85.0, 65.0, 16.0, 35.0f, DEVICE_ID_SYSTEM_LEVEL_DETECTOR);
     uBit.audio.activateMic();
 
     char float_str[20];
@@ -133,7 +133,7 @@ mems_clap_test_spl(int wait_for_clap)
         processor = new StreamNormalizer(mic->output, 1.0f, true, DATASTREAM_FORMAT_UNKNOWN, 10);
 
     if (levelSPL == NULL)
-        levelSPL = new LevelDetectorSPL(processor->output, 75.0, 60.0, 9, 52, DEVICE_ID_MICROPHONE);
+        levelSPL = new LevelDetectorSPL(processor->output, 75.0, 60.0, 9.0f, 52.0f, DEVICE_ID_MICROPHONE);
 
     uBit.io.runmic.setDigitalValue(1);
     uBit.io.runmic.setHighDrive(true);
