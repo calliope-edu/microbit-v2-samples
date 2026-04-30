@@ -16,6 +16,20 @@
 
 extern MicroBit uBit;
 
+static int requestApproxSampleRate(SplitterChannel *channel, int desiredSampleRate) {
+    int upstreamSampleRate = (int)uBit.audio.splitter->upstream.getSampleRate();
+
+    if (desiredSampleRate <= 0)
+        desiredSampleRate = upstreamSampleRate;
+
+    int sampleDropRate = (upstreamSampleRate + desiredSampleRate / 2) / desiredSampleRate;
+
+    if (sampleDropRate < 1)
+        sampleDropRate = 1;
+
+    return channel->requestSampleDropRate(sampleDropRate);
+}
+
 /**
  * Tests if the mic auto activation (and ADC activation) works correctly
  */
@@ -50,7 +64,7 @@ void stream_test_record() {
     static StreamRecording * recording = new StreamRecording( *input );
     static MixerChannel * output = uBit.audio.mixer.addChannel( *recording );
 
-    input->requestSampleRate( 11000 );
+    requestApproxSampleRate(input, 11000);
     output->setSampleRate( 11000 );
     output->setVolume( CONFIG_MIXER_INTERNAL_RANGE * 0.8 ); // 80% volume
 
@@ -59,7 +73,7 @@ void stream_test_record() {
     uBit.display.printChar( '1', 1000 );
 
     uBit.display.printChar( 'R' );
-    input->requestSampleRate( 11000 );
+    requestApproxSampleRate(input, 11000);
     recording->recordAsync();
     while( recording->isRecording() ) {
         uBit.display.printChar( '~' );
@@ -91,7 +105,7 @@ static const int STRSR_SAMPLE_RATE = 11000;
 
 static void strsr_handle_buttonA(MicroBitEvent) {
     static SplitterChannel *splitterChannel = uBit.audio.splitter->createChannel();
-    splitterChannel->requestSampleRate(STRSR_SAMPLE_RATE);
+    requestApproxSampleRate(splitterChannel, STRSR_SAMPLE_RATE);
     static StreamRecording *recording = new StreamRecording(*splitterChannel);
     static MixerChannel *channel = uBit.audio.mixer.addChannel(*recording, STRSR_SAMPLE_RATE);
 
@@ -106,20 +120,20 @@ static void strsr_handle_buttonA(MicroBitEvent) {
     uBit.display.clear();
     uBit.audio.levelSPL->setUnit(LEVEL_DETECTOR_SPL_8BIT);
 
-    splitterChannel->requestSampleRate( STRSR_SAMPLE_RATE );
+    requestApproxSampleRate(splitterChannel, STRSR_SAMPLE_RATE);
 
     DMESG( "RECORDING" );
     recording->recordAsync();
     bool showR = true;
     while (uBit.buttonA.isPressed()) {
         if( uBit.logo.isPressed() ) {
-            splitterChannel->requestSampleRate( abs((uBit.accelerometer.getRoll()-90) * 100) );
+            requestApproxSampleRate(splitterChannel, abs((uBit.accelerometer.getRoll()-90) * 100));
             DMESG( "Sample Rate: %d (mic = %d)", (int)splitterChannel->getSampleRate(), (int)uBit.audio.mic->getSampleRate() );
         } else {
             if( uBit.buttonB.isPressed() )
-                splitterChannel->requestSampleRate( 5000 );
+                requestApproxSampleRate(splitterChannel, 5000);
             else
-                splitterChannel->requestSampleRate( STRSR_SAMPLE_RATE );
+                requestApproxSampleRate(splitterChannel, STRSR_SAMPLE_RATE);
         }
         
         if (showR)
